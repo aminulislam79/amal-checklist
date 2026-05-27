@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1a3a2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="দৈনিক আমল">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>দৈনিক আমল — ইসলামিক চেকলিস্ট</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:   #1a3a2a;
+    --green-mid:    #2d6a4f;
+    --green-light:  #52b788;
+    --gold:         #d4a843;
+    --gold-light:   #f0c96a;
+    --gold-pale:    #fdf3dc;
+    --cream:        #faf7f0;
+    --text-dark:    #1a1a1a;
+    --text-mid:     #3a3a3a;
+    --text-soft:    #6b7280;
+    --shadow:       rgba(26,58,42,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Noto Serif Bengali', serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(82,183,136,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(212,168,67,0.10) 0%, transparent 60%);
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content:'';
+    position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M30 0L37 21H60L42 34L49 55L30 42L11 55L18 34L0 21H23Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    opacity:.5;
+  }
+  .header-bismillah {
+    font-family: 'Amiri', serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--gold-light);
+    letter-spacing: .05em;
+    margin-bottom: .5rem;
+    position: relative;
+  }
+  .header-title {
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+    margin-bottom: .25rem;
+  }
+  .header-date {
+    font-size: .95rem;
+    color: rgba(255,255,255,.75);
+    position: relative;
+  }
+  .header-ornament {
+    color: var(--gold);
+    font-size: 1.1rem;
+    position: relative;
+    margin: .5rem 0 0;
+    letter-spacing: .2em;
+  }
+
+  /* ── Progress Section ── */
+  .progress-wrap {
+    margin: 1.5rem auto;
+    max-width: 640px;
+    padding: 0 1rem;
+  }
+  .progress-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px var(--shadow);
+    border: 1px solid rgba(212,168,67,.2);
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .75rem;
+  }
+  .progress-label {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+  .progress-pct {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .progress-bar-bg {
+    height: 12px;
+    background: #e9f5ef;
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+    border-radius: 100px;
+    transition: width .5s ease;
+    width: 0%;
+  }
+  .progress-msg {
+    margin-top: .6rem;
+    font-size: .85rem;
+    color: var(--text-soft);
+    text-align: center;
+  }
+
+  /* ── Main Content ── */
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+  }
+
+  /* ── Section Heading ── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin: 1.5rem 0 .75rem;
+    padding-bottom: .4rem;
+    border-bottom: 2px solid var(--gold-pale);
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--green-mid);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: .9rem;
+    flex-shrink: 0;
+  }
+
+  /* ── Amal Card ── */
+  .amal-card {
+    background: #fff;
+    border-radius: 14px;
+    margin-bottom: .75rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    border: 1.5px solid transparent;
+    transition: border-color .25s, transform .15s, box-shadow .25s;
+    overflow: hidden;
+  }
+  .amal-card:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--shadow); }
+  .amal-card.done { border-color: var(--green-light); background: #f4fbf7; }
+
+  .amal-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* custom checkbox */
+  .amal-check {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2.5px solid var(--green-light);
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    transition: background .2s, border-color .2s;
+    position: relative;
+  }
+  .amal-card.done .amal-check {
+    background: var(--green-mid);
+    border-color: var(--green-mid);
+  }
+  .amal-check::after {
+    content:'✓';
+    color:#fff;
+    font-size:.85rem;
+    font-weight:700;
+    opacity:0;
+    transition: opacity .2s;
+  }
+  .amal-card.done .amal-check::after { opacity:1; }
+
+  .amal-info { flex: 1; min-width: 0; }
+  .amal-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    transition: color .2s;
+  }
+  .amal-card.done .amal-name { color: var(--green-mid); }
+  .amal-arabic {
+    font-family: 'Amiri', serif;
+    font-size: .95rem;
+    color: var(--text-soft);
+    margin-top: .1rem;
+    direction: rtl;
+  }
+
+  /* tip toggle */
+  .tip-btn {
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: .25rem .55rem;
+    font-size: .75rem;
+    color: #8a6a00;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+    transition: background .2s;
+  }
+  .tip-btn:hover { background: #fce8b0; }
+
+  .amal-tip {
+    display: none;
+    padding: .75rem 1.1rem .9rem;
+    background: var(--gold-pale);
+    border-top: 1px solid rgba(212,168,67,.25);
+    font-size: .875rem;
+    color: #6b4c00;
+    line-height: 1.7;
+  }
+  .amal-tip.show { display: block; animation: fadeIn .2s; }
+
+  @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+
+  /* sub-items (namaz waqt) */
+  .sub-items {
+    padding: 0 1.1rem .75rem 3.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .sub-item {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    background: #f0f9f4;
+    border: 1.5px solid #b7dfc9;
+    border-radius: 100px;
+    padding: .3rem .75rem;
+    cursor: pointer;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    -webkit-tap-highlight-color: transparent;
+    transition: background .2s, border-color .2s;
+    user-select: none;
+  }
+  .sub-item.done { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+  .sub-item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green-light);
+    flex-shrink: 0;
+    transition: background .2s;
+  }
+  .sub-item.done .dot { background: var(--gold-light); }
+
+  /* ── Reset button ── */
+  .reset-wrap {
+    text-align: center;
+    margin: 2rem 0 1rem;
+  }
+  .reset-btn {
+    background: none;
+    border: 1.5px solid var(--green-mid);
+    color: var(--green-mid);
+    border-radius: 100px;
+    padding: .55rem 1.6rem;
+    font-family: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .reset-btn:hover { background: var(--green-mid); color: #fff; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 1rem;
+    font-family: 'Amiri', serif;
+    color: var(--text-soft);
+    font-size: .9rem;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green-dark);
+    color: #fff;
+    padding: .7rem 1.4rem;
+    border-radius: 100px;
+    font-size: .88rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    transition: transform .3s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media(max-width:400px){
+    .amal-name { font-size: .92rem; }
+    .sub-items { padding-left: 2.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+  <div class="header-title">দৈনিক আমল চেকলিস্ট</div>
+  <div class="header-date" id="todayDate"></div>
+  <div class="header-ornament">✦ ✦ ✦</div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-card">
+    <div class="progress-top">
+      <span class="progress-label">আজকের অগ্রগতি</span>
+      <span class="progress-pct" id="pctText">০%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-msg" id="progressMsg">আজকের আমল শুরু করুন 🌙</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ৫ ওয়াক্ত নামাজ -->
+  <div class="section-title">
+    <div class="section-icon">🕌</div>
+    ফরজ নামাজ
+  </div>
+
+  <div class="amal-card" id="card-namaz">
+    <div class="amal-main" onclick="toggleCard('namaz')">
+      <div class="amal-check" id="check-namaz"></div>
+      <div class="amal-info">
+        <div class="amal-name">৫ ওয়াক্ত নামাজ</div>
+        <div class="amal-arabic">الصَّلَوَاتُ الْخَمْس</div>
+      </div>
+      <button class="tip-btn" onclick="event.stopPropagation(); toggleTip('tip-namaz')">ফযিলত</button>
+    </div>
+    <div class="sub-items" id="sub-namaz">
+      <div class="sub-item" id="sub-fajr" onclick="toggleSub('fajr','namaz')"><div class="dot"></div>ফজর</div>
+      <div class="sub-item" id="sub-dhuhr" onclick="toggleSub('dhuhr','namaz')"><div class="dot"></div>যোহর</div>
+      <div class="sub-item" id="sub-asr" onclick="toggleSub('asr','namaz')"><div class="dot"></div>আসর</div>
+      <div class="sub-item" id="sub-maghrib" onclick="toggleSub('maghrib','namaz')"><div class="dot"></div>মাগরিব</div>
+      <div class="sub-item" id="sub-isha" onclick="toggleSub('isha','namaz')"><div class="dot"></div>ইশা</div>
+    </div>
+    <div class="amal-tip" id="tip-namaz">
+      📿 নামাজ জান্নাতের চাবিকাঠি। রাসূল ﷺ বলেছেন: <em>"নামাজ হলো দ্বীনের খুঁটি।"</em> (তিরমিযী) — ফজর ও ইশার নামাজ জামাআতে পড়লে সারারাত ইবাদতের সাওয়াব পাওয়া যায়।
+    </div>
+  </div>
+
+  <!-- সুন্নত নামাজ -->
+  <div class="section-title">
+    <div class="section-icon">🌟</div>
+    সুন্নত নামাজ
+  </div>
+
+  <div class="amal-card" id="card-sunnah">
+    <div class="amal-main" onclick="toggleCard('sunnah')">
+      <div class="amal-check" id="check-sunnah"></div>
+      <div class="amal-info">
+        <div class="amal-name">সুন্নত নামাজ</div>
+        <div class="amal-arabic">الصَّلَاةُ السُّنَّة</div>
+      </div>
+      <button class="tip-btn" onclick="event.stopPropagation(); toggleTip('tip-sunnah')">ফযিলত</button>
+    </div>
+    <div class="sub-items" id="sub-sunnah-items">
+      <div class="sub-item" id="sub-fajr2" onclick="toggleSub('fajr2','sunnah')"><div class="dot"></div>ফজরের ২ রাকাত</div>
+      <div class="sub-item" id="sub-dhuhr2" onclick="toggleSub('dhuhr2','sunnah')"><div class="dot"></div>যোহরের ৪+২</div>
+      <div class="sub-item" id="sub-maghrib2" onclick="toggleSub('maghrib2','sunnah')"><div class="dot"></div>মাগরিবের ২</div>
+      <div class="sub-item" id="sub-isha2" onclick="toggleSub('isha2','sunnah')"><div class="dot"></div>ইশার ২</div>
+      <div class="sub-item" id="sub-tahajjud" onclick="toggleSub('tahajjud','sunnah')"><div class="dot"></div>তাহাজ্জুদ</div>
+    </div>
+    <div class="amal-tip" id="tip-sunnah">
+      🌙 রাসূল ﷺ বলেছেন: <em>"যে ব্যক্তি দিনে-রাতে ১২ রাকাত সুন্নত নামাজ পড়বে, আল্লাহ তার জন্য জান্নাতে একটি ঘর নির্মাণ করবেন।"</em> (মুসলিম)
+    </div>
+  </div>
+
+  <!-- কুরআন তেলাওয়াত -->
+  <div class="section-title">
+    <div class="section-icon">📖</div>
+    কুরআন তেলাওয়াত
+  </div>
+
+  <div class="amal-card" id="card-quran">
+    <div class="amal-main" onclick="toggleCard('quran')">
+      <div class="amal-check" id="check-quran"></div>
+      <div class="amal-info">
+        <div class="amal-name">কুরআন তেলাওয়াত</div>
+        <div class="amal-arabic">تِلَاوَةُ الْقُرْآن</div>
+      </div>
+      <button class="tip-btn" onclick="event.stopPropagation(); toggleTip('tip-quran')">ফযিলত</button>
+    </div>
+    <div class="amal-tip" id="tip-quran">
+      📗 রাসূল ﷺ বলেছেন: <em>"কুরআনের প্রতিটি হরফে ১০টি নেকি।"</em> (তিরমিযী) — প্রতিদিন কমপক্ষে ১ পৃষ্ঠা তেলাওয়াতের অভ্যাস গড়ুন। সূরা আল-মুলক রাতে পড়লে কবরের আযাব থেকে রক্ষা পাওয়া যায় ইনশাআল্লাহ।
+    </div>
+  </div>
+
+  <!-- যিকির / তাসবিহ -->
+  <div class="section-title">
+    <div class="section-icon">📿</div>
+    যিকির ও তাসবিহ
+  </div>
+
+  <div class="amal-card" id="card-zikr">
+    <div class="amal-main" onclick="toggleCard('zikr')">
+      <div class="amal-check" id="check-zikr"></div>
+      <div class="amal-info">
+        <div class="amal-name">যিকির ও তাসবিহ</div>
+        <div class="amal-arabic">الذِّكْرُ وَالتَّسْبِيح</div>
+      </div>
+      <button class="tip-btn" onclick="event.stopPropagation(); toggleTip('tip-zikr')">ফযিলত</button>
+    </div>
+    <div class="sub-items">
+      <div class="sub-item" id="sub-subhanallah" onclick="toggleSub('subhanallah','zikr')"><div class="dot"></div>সুবহানাল্লাহ ×৩৩</div>
+      <div class="sub-item" id="sub-alhamdulillah" onclick="toggleSub('alhamdulillah','zikr')"><div class="dot"></div>আলহামদুলিল্লাহ ×৩৩</div>
+      <div class="sub-item" id="sub-allahuakbar" onclick="toggleSub('allahuakbar','zikr')"><div class="dot"></div>আল্লাহু আকবার ×৩৪</div>
+      <div class="sub-item" id="sub-istighfar" onclick="toggleSub('istighfar','zikr')"><div class="dot"></div>ইস্তিগফার</div>
+      <div class="sub-item" id="sub-darood" onclick="toggleSub('darood','zikr')"><div class="dot"></div>দরূদ শরীফ</div>
+    </div>
+    <div class="amal-tip" id="tip-zikr">
+      💫 রাসূল ﷺ বলেছেন: <em>"যে ব্যক্তি নামাজের পর ৩৩ বার সুবহানাল্লাহ, ৩৩ বার আলহামদুলিল্লাহ ও ৩৪ বার আল্লাহু আকবার বলে — তার গুনাহ মাফ হয়ে যায় সমুদ্রের ফেনার সমান হলেও।"</em> (মুসলিম)
+    </div>
+  </div>
+
+  <!-- দোয়া / আযকার -->
+  <div class="section-title">
+    <div class="section-icon">🌅</div>
+    দোয়া ও আযকার
+  </div>
+
+  <div class="amal-card" id="card-dua">
+    <div class="amal-main" onclick="toggleCard('dua')">
+      <div class="amal-check" id="check-dua"></div>
+      <div class="amal-info">
+        <div class="amal-name">সকাল-সন্ধ্যার আযকার</div>
+        <div class="amal-arabic">أَذْكَارُ الصَّبَاحِ وَالْمَسَاء</div>
+      </div>
+      <button class="tip-btn" onclick="event.stopPropagation(); toggleTip('tip-dua')">ফযিলত</button>
+    </div>
+    <div class="sub-items">
+      <div class="sub-item" id="sub-morning" onclick="toggleSub('morning','dua')"><div class="dot"></div>সকালের আযকার</div>
+      <div class="sub-item" id="sub-evening" onclick="toggleSub('evening','dua')"><div class="dot"></div>সন্ধ্যার আযকার</div>
+      <div class="sub-item" id="sub-sleep" onclick="toggleSub('sleep','dua')"><div class="dot"></div>ঘুমের দোয়া</div>
+    </div>
+    <div class="amal-tip" id="tip-dua">
+      🌄 সকাল-সন্ধ্যার আযকার পড়লে সারাদিন শয়তান থেকে হেফাজত থাকা যায়। আয়াতুল কুরসি পড়ে ঘুমালে ফেরেশতা পাহারা দেন সারারাত। (বুখারি)
+    </div>
+  </div>
+
+  <div class="reset-wrap">
+    <button class="reset-btn" onclick="resetAll()">🔄 সব রিসেট করুন</button>
+  </div>
+
+</main>
+
+<footer>اللَّهُمَّ أَعِنَّا عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────
+const STORAGE_KEY = 'islamicAmalState_v2';
+const RESET_KEY   = 'islamicAmalResetDate';
+
+// All trackable items
+const ALL_ITEMS = [
+  'fajr','dhuhr','asr','maghrib','isha',          // namaz subs
+  'fajr2','dhuhr2','maghrib2','isha2','tahajjud', // sunnah subs
+  'quran',                                         // single cards
+  'subhanallah','alhamdulillah','allahuakbar','istighfar','darood', // zikr
+  'morning','evening','sleep'                      // dua
+];
+
+// Which sub-items belong to which parent card
+const CARD_SUBS = {
+  namaz:  ['fajr','dhuhr','asr','maghrib','isha'],
+  sunnah: ['fajr2','dhuhr2','maghrib2','isha2','tahajjud'],
+  zikr:   ['subhanallah','alhamdulillah','allahuakbar','istighfar','darood'],
+  dua:    ['morning','evening','sleep'],
+};
+// Cards with no sub-items (direct toggle)
+const DIRECT_CARDS = ['quran'];
+
+let state = {};
+
+// ── Init ──────────────────────────────────────────────
+function init() {
+  autoReset();
+  loadState();
+  renderDate();
+  renderAll();
+}
+
+function renderDate() {
+  const d = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('todayDate').textContent =
+    d.toLocaleDateString('bn-BD', opts);
+}
+
+function autoReset() {
+  const today = new Date().toDateString();
+  const last  = localStorage.getItem(RESET_KEY);
+  if (last !== today) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(RESET_KEY, today);
+  }
+}
+
+function loadState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  state = saved ? JSON.parse(saved) : {};
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ── Toggle Functions ──────────────────────────────────
+function toggleCard(cardId) {
+  if (DIRECT_CARDS.includes(cardId)) {
+    state[cardId] = !state[cardId];
+    saveState();
+    renderAll();
+    showToast(state[cardId] ? '✅ আলহামদুলিল্লাহ!' : '');
+    return;
+  }
+  // For cards with sub-items: check if all done → reset; else mark all done
+  const subs = CARD_SUBS[cardId] || [];
+  const allDone = subs.every(s => state[s]);
+  subs.forEach(s => state[s] = !allDone);
+  saveState();
+  renderAll();
+  if (!allDone) showToast('✅ আলহামদুলিল্লাহ!');
+}
+
+function toggleSub(subId, cardId) {
+  state[subId] = !state[subId];
+  saveState();
+  renderAll();
+  if (state[subId]) showToast('✅ আলহামদুলিল্লাহ!');
+}
+
+function resetAll() {
+  if (!confirm('সব আমল রিসেট করবেন?')) return;
+  state = {};
+  saveState();
+  renderAll();
+  showToast('🔄 রিসেট হয়েছে');
+}
+
+// ── Render ──────────────────────────────────────────
+function renderAll() {
+  // Sub items
+  ALL_ITEMS.forEach(id => {
+    const el = document.getElementById('sub-' + id);
+    if (el) {
+      el.classList.toggle('done', !!state[id]);
+    }
+  });
+
+  // Direct cards
+  DIRECT_CARDS.forEach(id => {
+    const card = document.getElementById('card-' + id);
+    const check = document.getElementById('check-' + id);
+    if (card) card.classList.toggle('done', !!state[id]);
+  });
+
+  // Cards with subs — mark done if all subs done
+  Object.keys(CARD_SUBS).forEach(cardId => {
+    const subs = CARD_SUBS[cardId];
+    const allDone = subs.length > 0 && subs.every(s => state[s]);
+    const card = document.getElementById('card-' + cardId);
+    if (card) card.classList.toggle('done', allDone);
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = ALL_ITEMS.length;
+  const done  = ALL_ITEMS.filter(id => state[id]).length;
+  const pct   = Math.round((done / total) * 100);
+
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('pctText').textContent = toBengaliNum(pct) + '%';
+
+  const msgs = [
+    [0,   '🌙 আজকের আমল শুরু করুন'],
+    [1,   '✨ শুরু হলো — আল্লাহ কবুল করুন'],
+    [25,  '💪 ভালো যাচ্ছে! চালিয়ে যান'],
+    [50,  '🌟 অর্ধেক হয়েছে — মাশাআল্লাহ!'],
+    [75,  '🔥 প্রায় শেষ — একটু বাকি!'],
+    [100, '🏆 সব আমল সম্পন্ন! জাযাকাল্লাহু খাইরান'],
+  ];
+  let msg = msgs[0][1];
+  for (const [threshold, text] of msgs) {
+    if (pct >= threshold) msg = text;
+  }
+  document.getElementById('progressMsg').textContent = msg;
+}
+
+// ── Tip Toggle ──────────────────────────────────────
+function toggleTip(tipId) {
+  const el = document.getElementById(tipId);
+  el.classList.toggle('show');
+}
+
+// ── Toast ────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  if (!msg) return;
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── Bengali Numerals ─────────────────────────────────
+function toBengaliNum(n) {
+  return String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+}
+
+init();
+
+// ── PWA Service Worker ────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+</script>
+</body>
+</html>
